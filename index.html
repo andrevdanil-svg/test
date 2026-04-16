@@ -518,6 +518,15 @@ body {
   caret-color: #FFFFFF;
   transition: background-color 99999s ease-in-out 0s, color 99999s ease-in-out 0s;
 }
+/* iOS Safari ignores background-clip:text for autofill — override with inset shadow */
+@media (max-width: 640px) {
+  .field input:-webkit-autofill,
+  .field input:-webkit-autofill:hover,
+  .field input:-webkit-autofill:focus,
+  .field input:-webkit-autofill:active {
+    box-shadow: 0 0 0 1000px rgba(4, 16, 40, 0.9) inset !important;
+  }
+}
 .field label {
   position: absolute;
   left: 16px;
