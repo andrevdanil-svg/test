@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#031029" />
+<title>Ledokol Group — 18 лет пути</title>
+<meta name="description" content="Закрытая вечеринка в честь 18-летия Ledokol Group. 23 апреля, 19:00, Bar Gravity." />
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- GSAP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+<style>
+/* ============================================================
+   LEDOKOL 18 — PREMIUM INVITATION LANDING
+   All styles scoped via body-level variables; safe to embed.
+   ============================================================ */
+:root {
+  /* Brand palette — from ledokolgroup.com / ledokolpromax.tilda.ws:
+     --color-primary #0C5DC5, --color-dark #27272E, --color-light #ECF2F6,
+     --color-accent1 #FFDC60 (gold), --color-mabel #DBF8FF.
+     Light corporate theme: white canvas + light-grey sections + brand-blue accents. */
+  --brand-blue: #0C5DC5;
+  --brand-blue-bright: #2E84F2;
+  --brand-dark: #ECF2F6;         /* light-grey section slot */
+  --brand-dark-deep: #FFFFFF;    /* white canvas slot */
+  --brand-light: #ECF2F6;
+  --brand-gold: #FFDC60;
+  --ink-black: #FFFFFF;          /* now "on-accent" text color (white on blue CTAs) */
+  --deep-navy: #F5F8FC;           /* very pale blue panel slot */
+  --mid-navy: #0C5DC5;
+  --ice-blue: #0C5DC5;
+  --glow-cyan: #2E84F2;           /* now secondary brand-blue accent (no cyan) */
+  --frost: #1B1B22;               /* primary dark text on light bg */
+  --steel: #757589;               /* secondary grey text */
+  --danger: #E0324C;
+  --radius: 14px;
+  --shadow-glow: 0 10px 40px rgba(12, 93, 197, 0.12);
+  --shadow-deep: 0 20px 60px rgba(12, 36, 84, 0.10);
+  --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: #041028;
+  color: #FFFFFF;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
+}
+
+/* ============ Background stack — cracked-ice dark hero ============
+   User-supplied cracked-ice photo as base, with a dark scrim for text contrast
+   and blue radial accents preserved for depth. Additional SVG ice-crack layer
+   + grain layer blend on top for photographic richness. */
+.bg-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.bg-gradient-dark {
+  background: url('assets/bg-ice.jpg') center / cover no-repeat;
+}
+
+/* Legacy nodes — hidden. Kept to avoid querySelector crashes. */
+.bg-gradient-light,
+.bg-texture,
+.bg-noise,
+.shards,
+.bokeh-layer,
+.corner-dots { display: none !important; }
+
+
+/* ============ Top chrome (logo + lang) ============ */
+.top-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  padding: clamp(16px, 3vw, 32px) clamp(20px, 4vw, 48px);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  z-index: 100;
+  pointer-events: none;
+}
+.top-bar > * { pointer-events: auto; }
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  user-select: none;
+  margin-top: calc(-0.5 * clamp(16px, 3vw, 32px));
+}
+.logo-img {
+  height: clamp(320px, 38vw, 440px);
+  width: auto;
+  display: block;
+  filter: brightness(0) invert(1);
+}
+.logo-img[data-missing="1"] { display: none; }
+
+.lang-switch {
+  display: inline-flex;
+  gap: 2px;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+.lang-switch button {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.55);
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  padding: 8px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.3s var(--ease-smooth);
+  min-width: 36px;
+  min-height: 32px;
+}
+.lang-switch button:hover { color: #FFFFFF; }
+.lang-switch button.active {
+  background: linear-gradient(135deg, var(--brand-blue), var(--brand-blue-bright));
+  color: #FFFFFF;
+  box-shadow: 0 4px 14px rgba(46, 132, 242, 0.45);
+}
+
+/* Decorative chevron on slide 1 — dark-glass pill */
+.slide-chevron {
+  position: absolute;
+  bottom: clamp(24px, 5vh, 48px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  opacity: 0.7;
+  pointer-events: none;
+}
+.slide-chevron svg {
+  width: 18px; height: 18px;
+  color: #FFFFFF;
+  animation: chevronBounce 2.4s ease-in-out infinite;
+}
+@keyframes chevronBounce {
+  0%, 100% { transform: translateY(0); opacity: 0.9; }
+  50%      { transform: translateY(5px); opacity: 0.5; }
+}
+
+/* ============ Stage: slides container ============ */
+.stage {
+  position: relative;
+  height: 100vh;
+  height: 100dvh;
+  width: 100vw;
+  overflow: hidden;
+  z-index: 2;
+}
+.slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(80px, 12vh, 120px) clamp(20px, 5vw, 60px) clamp(40px, 8vh, 80px);
+  opacity: 0;
+  visibility: hidden;
+  overflow-y: auto;
+}
+.slide.active {
+  opacity: 1;
+  visibility: visible;
+  z-index: 3;
+}
+
+/* ============ Slide 1: Age gate ============ */
+.age-gate {
+  text-align: center;
+  max-width: 900px;
+  width: 100%;
+}
+/* Prevent FOUC: hide animated entry targets until GSAP reveals them.
+   The .js-ready class is toggled on once JS boots so no-JS users still see content. */
+.js-pending .age-huge,
+.js-pending .age-question,
+.js-pending .age-buttons .btn { opacity: 0; }
+.age-huge {
+  font-family: 'Unbounded', sans-serif;
+  font-weight: 900;
+  font-size: clamp(7rem, 22vw, 16rem);
+  line-height: 0.85;
+  letter-spacing: -0.04em;
+  background: linear-gradient(180deg, #FFFFFF 0%, #C6D4EC 45%, #2E84F2 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: clamp(16px, 3vh, 32px);
+  position: relative;
+  display: inline-block;
+  filter: drop-shadow(0 14px 40px rgba(12, 93, 197, 0.35));
+}
+.age-huge::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -8px;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #2E84F2, transparent);
+  opacity: 0.8;
+}
+.age-question {
+  font-family: 'Unbounded', sans-serif;
+  font-weight: 500;
+  font-size: clamp(1.1rem, 2.6vw, 1.8rem);
+  color: rgba(255, 255, 255, 0.72);
+  margin-bottom: clamp(32px, 6vh, 56px);
+  letter-spacing: 0.02em;
+}
+.age-buttons {
+  display: flex;
+  gap: clamp(12px, 2vw, 20px);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ============ Button system ============ */
+.btn {
+  appearance: none;
+  border: 0;
+  cursor: pointer;
+  font-family: 'Unbounded', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 18px 42px;
+  font-size: 15px;
+  border-radius: var(--radius);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s var(--ease-smooth), box-shadow 0.3s var(--ease-smooth);
+  min-height: 52px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.btn:active { transform: translateY(1px); }
+.btn:focus-visible { outline: 2px solid var(--brand-blue); outline-offset: 3px; }
+
+.btn-primary {
+  color: #FFFFFF;
+  background: linear-gradient(135deg, var(--brand-blue) 0%, var(--brand-blue-bright) 100%);
+  box-shadow: 0 8px 24px rgba(12, 93, 197, 0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+}
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #fff 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(12, 93, 197, 0.4), inset 0 1px 0 rgba(255,255,255,0.25);
+}
+.btn-primary:hover::before { opacity: 0.12; }
+
+.btn-ghost {
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1.5px solid rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: #FFFFFF;
+  color: #FFFFFF;
+  transform: translateY(-2px);
+}
+
+.btn-large {
+  padding: 24px 56px;
+  font-size: 17px;
+  min-width: 180px;
+}
+
+.btn-arrow {
+  width: 16px; height: 12px;
+  flex-shrink: 0;
+  transition: transform 0.3s var(--ease-smooth);
+}
+.btn:hover .btn-arrow { transform: translateX(4px); }
+
+/* ============ Slide 2: Invitation ============ */
+.invite {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: clamp(20px, 4vh, 36px);
+  max-width: 760px;
+  width: 100%;
+}
+
+.invite-content {
+  max-width: 680px;
+  width: 100%;
+}
+.invite-title {
+  font-family: 'Unbounded', sans-serif;
+  font-size: clamp(1.75rem, 4.5vw, 3rem);
+  font-weight: 800;
+  line-height: 1.1;
+  color: #FFFFFF;
+  margin: 0 0 28px;
+  letter-spacing: -0.01em;
+}
+.invite-text {
+  font-size: clamp(0.95rem, 1.4vw, 1.05rem);
+  color: rgba(255, 255, 255, 0.82);
+  margin-bottom: 18px;
+  line-height: 1.65;
+}
+.invite-text strong { color: #FFFFFF; font-weight: 600; }
+
+.invite-lead {
+  margin-top: 8px;
+  font-size: clamp(0.95rem, 1.4vw, 1.05rem);
+  font-weight: 600;
+  color: #FFFFFF;
+  letter-spacing: 0.02em;
+}
+
+.invite-features {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin: 20px auto 28px;
+  padding: 22px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+.feature {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+.feature img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+.feature span {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: 0.02em;
+  line-height: 1.3;
+}
+
+/* ============ Slide 3: Form ============ */
+.form-wrap {
+  width: 100%;
+  max-width: 520px;
+  position: relative;
+}
+.step-indicator {
+  position: absolute;
+  top: -42px;
+  right: 0;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+}
+.form-title {
+  font-family: 'Unbounded', sans-serif;
+  font-weight: 800;
+  font-size: clamp(2.2rem, 6vw, 3.5rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+  background: linear-gradient(180deg, #FFFFFF 0%, var(--brand-blue-bright) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 6px 20px rgba(12, 93, 197, 0.25));
+}
+.form-sub {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 15px;
+  margin-bottom: 32px;
+}
+
+.form-card {
+  padding: clamp(24px, 4vw, 36px);
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  position: relative;
+}
+.form-card::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 28px;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(46, 132, 242, 0.35), transparent 40%, transparent 60%, rgba(255, 255, 255, 0.1));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.field {
+  position: relative;
+  margin-bottom: 18px;
+}
+/* The glass surface lives on .field-control, NOT on the <input>. Chrome's
+   autofill paints an opaque background directly on the <input>, which clashes
+   with a translucent glass look. By keeping the input transparent and moving
+   the bg/border/focus-ring to the wrapper, autofill never fights us — we just
+   clip Chrome's yellow bg to the text glyph shape (invisible since text is
+   white), and the wrapper's glass shows through like any other state. */
+.field-control {
+  position: relative;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  transition: background 0.25s var(--ease-smooth),
+              border-color 0.25s var(--ease-smooth),
+              box-shadow 0.25s var(--ease-smooth);
+}
+/* Focus-within covers both empty-focused and autofilled-focused states.
+   :has(input:not(:placeholder-shown)) covers filled-unfocused (including
+   autofill, since Chrome sets the value). */
+.field-control:focus-within,
+.field-control:has(input:not(:placeholder-shown)) {
+  border-color: var(--brand-blue-bright);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 3px rgba(46, 132, 242, 0.18);
+}
+.field input {
+  width: 100%;
+  padding: 22px 16px 10px;
+  background: transparent;
+  border: 0;
+  border-radius: 12px;
+  color: #FFFFFF;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  outline: none;
+  /* Hint Chrome to use dark-scheme internal colors (caret, autofill fallback) */
+  color-scheme: dark;
+}
+/* Chrome / Safari autofill — the text-clip trick: Chrome's autofill background
+   is clipped to text glyphs, and the glyphs are repainted white via
+   -webkit-text-fill-color, so no yellow/grey patch is visible anywhere. The
+   wrapper's glass background shines through unchanged. */
+.field input:-webkit-autofill,
+.field input:-webkit-autofill:hover,
+.field input:-webkit-autofill:focus,
+.field input:-webkit-autofill:active {
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: #FFFFFF !important;
+  caret-color: #FFFFFF;
+  transition: background-color 99999s ease-in-out 0s, color 99999s ease-in-out 0s;
+}
+.field label {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.55);
+  pointer-events: none;
+  transition: all 0.2s var(--ease-smooth);
+  background: transparent;
+}
+.field input:focus + label,
+.field input:not(:placeholder-shown) + label {
+  top: 11px;
+  transform: translateY(0);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--brand-blue-bright);
+  font-weight: 600;
+}
+.field-error {
+  display: none;
+  color: var(--danger);
+  font-size: 12px;
+  margin-top: 6px;
+  padding-left: 4px;
+}
+.field.has-error .field-control {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px rgba(224, 50, 76, 0.15);
+}
+.field.has-error .field-error { display: block; }
+
+.submit-btn {
+  width: 100%;
+  margin-top: 8px;
+}
+.submit-btn[disabled] { opacity: 0.7; cursor: wait; }
+
+.spinner {
+  width: 18px; height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #FFFFFF;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: none;
+}
+.submit-btn.loading .spinner { display: inline-block; }
+.submit-btn.loading .btn-label { display: none; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ============ Slide 4: Confirmation ============ */
+.confirm {
+  text-align: center;
+  max-width: 720px;
+  width: 100%;
+}
+.confirm-check {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 24px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, var(--brand-blue) 0%, var(--brand-blue-bright) 100%);
+  box-shadow: 0 18px 48px rgba(46, 132, 242, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.12);
+  position: relative;
+}
+.confirm-check svg { width: 34px; height: 34px; color: #FFFFFF; }
+.confirm-check::before {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: 2px solid rgba(46, 132, 242, 0.45);
+  animation: pulseRing 2.4s ease-out infinite;
+}
+@keyframes pulseRing {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+.confirm-heading {
+  font-family: 'Unbounded', sans-serif;
+  font-weight: 500;
+  font-size: clamp(0.85rem, 1.6vw, 1rem);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--brand-blue-bright);
+  margin-bottom: 18px;
+}
+.confirm-date {
+  font-family: 'Unbounded', sans-serif;
+  font-weight: 900;
+  font-size: clamp(2rem, 7.2vw, 5rem);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  background: linear-gradient(135deg, #FFFFFF 0%, var(--brand-blue-bright) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 10px;
+  white-space: nowrap;
+  filter: drop-shadow(0 8px 30px rgba(12, 93, 197, 0.3));
+}
+.confirm-date-sep {
+  display: inline-block;
+  margin: 0 0.2em;
+  color: var(--brand-blue-bright);
+  -webkit-text-fill-color: var(--brand-blue-bright);
+  opacity: 0.85;
+}
+.confirm-venue {
+  font-family: 'Unbounded', sans-serif;
+  font-weight: 800;
+  font-size: clamp(1.4rem, 4vw, 2.4rem);
+  letter-spacing: 0.08em;
+  margin-bottom: 32px;
+  color: #FFFFFF;
+  text-decoration: none;
+  display: inline-block;
+  position: relative;
+  transition: color 0.25s var(--ease-smooth);
+}
+.confirm-venue::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -4px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--brand-blue-bright), transparent);
+  opacity: 0.8;
+  transition: opacity 0.25s var(--ease-smooth);
+}
+.confirm-venue:hover,
+.confirm-venue:focus-visible {
+  color: var(--brand-blue-bright);
+  outline: none;
+}
+.confirm-venue:hover::after,
+.confirm-venue:focus-visible::after {
+  opacity: 1;
+}
+.confirm-text {
+  font-size: clamp(0.95rem, 1.4vw, 1.05rem);
+  color: rgba(255, 255, 255, 0.72);
+  margin-bottom: 36px;
+  line-height: 1.6;
+}
+.confirm-actions {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ============ Confetti particles (confirm screen) ============ */
+.particle {
+  position: absolute;
+  width: 6px; height: 6px;
+  background: var(--brand-blue);
+  border-radius: 1px;
+  pointer-events: none;
+  opacity: 0;
+}
+
+/* ============ Modal (age-gate NO) ============ */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(3, 10, 25, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 20px;
+  opacity: 0;
+  transition: opacity 0.3s var(--ease-smooth);
+}
+.modal-backdrop.active { display: flex; opacity: 1; }
+.modal {
+  max-width: 420px;
+  width: 100%;
+  padding: 36px 32px;
+  border-radius: 28px;
+  background: rgba(12, 27, 58, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  text-align: center;
+  transform: scale(0.9);
+  transition: transform 0.4s var(--ease-smooth);
+}
+.modal-backdrop.active .modal { transform: scale(1); }
+.modal-title {
+  font-family: 'Unbounded', sans-serif;
+  font-weight: 700;
+  font-size: 22px;
+  margin-bottom: 12px;
+  color: #FFFFFF;
+}
+.modal-text {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.72);
+  margin-bottom: 24px;
+  line-height: 1.55;
+}
+
+/* ============ Responsive tweaks ============ */
+@media (max-width: 640px) {
+  .btn-large { padding: 20px 32px; font-size: 15px; min-width: 140px; }
+  .age-buttons { flex-direction: row; }
+  .age-buttons .btn { flex: 1; min-width: 0; }
+  .invite-features { grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 14px 10px; }
+  .feature img { width: 26px; height: 26px; }
+  .feature span { font-size: 10px; letter-spacing: 0; }
+  .invite-title { font-size: 1.25rem; line-height: 1.15; margin-bottom: 14px; }
+  .invite-text { font-size: 0.82rem; line-height: 1.5; margin-bottom: 14px; }
+  .invite-lead { font-size: 0.85rem; margin-top: 4px; }
+  .slide { align-items: safe center; padding-top: clamp(96px, 14vh, 120px); }
+  .step-indicator { position: static; margin-bottom: 8px; display: block; text-align: right; }
+  .confirm-actions { flex-direction: column; }
+  .confirm-actions .btn { width: 100%; }
+  .top-bar { padding: 14px 16px; }
+  .logo-text { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============ Visibility toggle helper ============ */
+[hidden] { display: none !important; }
+</style>
+</head>
+<body class="js-pending">
+
+<!-- Background stack: deep-navy gradient base + cracked-ice SVG pattern + grain.
+     Ledokol = icebreaker, so the background reads as shattered pack ice at night. -->
+<div class="bg-layer bg-gradient-dark"></div>
+
+<!-- Legacy no-op nodes -->
+<div class="bg-layer bg-texture" id="bgTexture" hidden></div>
+<div class="bg-layer bg-noise" hidden></div>
+
+<!-- Top bar -->
+<header class="top-bar">
+  <a class="logo" href="#" aria-label="Ledokol Group">
+    <img src="assets/logo-ledokol.png" alt="Ledokol Group" class="logo-img" onerror="this.setAttribute('data-missing','1')" />
+  </a>
+  <nav class="lang-switch" aria-label="Language">
+    <button data-lang="ru" class="active">RU</button>
+    <button data-lang="en">EN</button>
+    <button data-lang="uz">UZ</button>
+  </nav>
+</header>
+
+<!-- Stage -->
+<main class="stage">
+
+  <!-- ============ SLIDE 1: AGE GATE ============ -->
+  <section class="slide active" data-slide="1" aria-labelledby="age-title">
+    <div class="age-gate">
+      <h1 class="age-huge" aria-label="18 plus">18<span style="-webkit-text-fill-color: var(--glow-cyan); background: none; color: var(--glow-cyan);">+</span></h1>
+      <p class="age-question" id="age-title" data-i18n="ageQuestion">Вам есть 18 лет?</p>
+      <div class="age-buttons">
+        <button class="btn btn-primary btn-large" data-action="age-yes">
+          <span data-i18n="yes">Да</span>
+          <svg class="btn-arrow" viewBox="0 0 16 12" fill="none" aria-hidden="true">
+            <path d="M1 6 H14 M9 1 L14 6 L9 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <button class="btn btn-ghost btn-large" data-action="age-no" data-i18n="no">Нет</button>
+      </div>
+    </div>
+    <!-- Decorative chevron accent — echoes the corp-site scroll indicator -->
+    <div class="slide-chevron" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 9 L12 15 L18 9"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 2: INVITATION ============ -->
+  <section class="slide" data-slide="2" aria-labelledby="invite-title">
+    <div class="invite">
+      <div class="invite-content">
+        <h2 class="invite-title" id="invite-title" data-i18n="inviteTitle">18 лет пути. Спасибо, что вы с нами!</h2>
+        <p class="invite-text" data-i18n="inviteText1">Восемнадцать лет — это не просто цифра. Это тысячи успешных кейсов, сотни вызовов и один надежный Ледокол, который уверенно идет вперед благодаря вам.</p>
+        <p class="invite-text" id="invite-lead-para" data-i18n="inviteText2"><strong>В честь нашего дня рождения мы приглашаем вас на закрытую вечеринку 23 апреля.</strong> Давайте ненадолго отложим дела, чтобы поднять бокалы за наше общее будущее, пообщаться вживую и просто хорошо провести вечер.</p>
+
+        <p class="invite-lead" id="invite-lead" data-i18n="inviteLead">Вас ждут:</p>
+
+        <div class="invite-features">
+          <div class="feature">
+            <img src="assets/icons/glasses.png" alt="" aria-hidden="true" />
+            <span data-i18n="featDinner">Ужин</span>
+          </div>
+          <div class="feature">
+            <img src="assets/icons/cocktail.png" alt="" aria-hidden="true" />
+            <span data-i18n="featCocktails">Авторские коктейли</span>
+          </div>
+          <div class="feature">
+            <img src="assets/icons/chat.png" alt="" aria-hidden="true" />
+            <span data-i18n="featTalk">Живое общение</span>
+          </div>
+          <div class="feature">
+            <img src="assets/icons/gift.png" alt="" aria-hidden="true" />
+            <span data-i18n="featSurprise">Приятные сюрпризы</span>
+          </div>
+        </div>
+
+        <button class="btn btn-primary btn-large" data-action="go-register">
+          <span data-i18n="register">Зарегистрироваться</span>
+          <svg class="btn-arrow" viewBox="0 0 16 12" fill="none" aria-hidden="true">
+            <path d="M1 6 H14 M9 1 L14 6 L9 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 3: FORM ============ -->
+  <section class="slide" data-slide="3" aria-labelledby="form-title">
+    <div class="form-wrap">
+      <span class="step-indicator" data-i18n="step">Шаг 1 из 2</span>
+      <h2 class="form-title" id="form-title" data-i18n="formTitle">Регистрация</h2>
+      <p class="form-sub" data-i18n="formSub">Оставьте данные — мы ждём вас.</p>
+
+      <form class="form-card" id="regForm" novalidate>
+        <div class="field">
+          <div class="field-control">
+            <input type="text" id="fName" name="name" placeholder=" " autocomplete="name" required />
+            <label for="fName" data-i18n="fieldName">ФИО</label>
+          </div>
+          <span class="field-error" data-i18n="errName">Введите ФИО</span>
+        </div>
+        <div class="field">
+          <div class="field-control">
+            <input type="text" id="fCompany" name="company" placeholder=" " autocomplete="organization" required />
+            <label for="fCompany" data-i18n="fieldCompany">Компания</label>
+          </div>
+          <span class="field-error" data-i18n="errCompany">Укажите компанию</span>
+        </div>
+        <div class="field">
+          <div class="field-control">
+            <input type="tel" id="fPhone" name="phone" placeholder=" " autocomplete="tel" inputmode="tel" required />
+            <label for="fPhone" data-i18n="fieldPhone">Телефон</label>
+          </div>
+          <span class="field-error" data-i18n="errPhone">Введите корректный номер</span>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-large submit-btn" id="submitBtn">
+          <span class="btn-label" data-i18n="submit">Зарегистрироваться</span>
+          <span class="spinner" aria-hidden="true"></span>
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 4: CONFIRMATION ============ -->
+  <section class="slide" data-slide="4" aria-labelledby="confirm-title">
+    <div class="confirm" id="confirmRoot">
+      <div class="confirm-check" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M5 12 L10 17 L19 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <p class="confirm-heading" id="confirm-title" data-i18n="confirmHeading">Встречаемся</p>
+      <div class="confirm-date">
+        <span>23.04</span><span class="confirm-date-sep">/</span><span>19:00</span>
+      </div>
+      <a class="confirm-venue"
+         href="https://yandex.uz/maps/org/156806330570/?ll=69.265291%2C41.292265&amp;z=17.27"
+         target="_blank" rel="noopener noreferrer">BAR GRAVITY</a>
+      <p class="confirm-text" data-i18n="confirmText">Спасибо за регистрацию. Готовьтесь к замечательному вечеру.</p>
+      <div class="confirm-actions">
+        <button class="btn btn-primary btn-large" id="icsBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <rect x="3" y="5" width="18" height="16" rx="2"/>
+            <path d="M3 9 L21 9 M8 3 L8 7 M16 3 L16 7" stroke-linecap="round"/>
+            <path d="M12 13 L12 17 M10 15 L14 15" stroke-linecap="round"/>
+          </svg>
+          <span data-i18n="addCalendar">Добавить в календарь</span>
+        </button>
+        <button class="btn btn-ghost btn-large" data-action="restart" data-i18n="restart">На главную</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Modal: Age-gate NO -->
+<div class="modal-backdrop" id="ageModal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal">
+    <h3 class="modal-title" id="modal-title" data-i18n="modalTitle">Приходите позже</h3>
+    <p class="modal-text" data-i18n="modalText">Это приглашение для гостей 18+. Будем рады встрече через несколько лет.</p>
+    <button class="btn btn-primary" data-action="modal-close" data-i18n="understood">Понятно</button>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   LEDOKOL 18 — APP LOGIC
+   ============================================================ */
+
+/* ---------- i18n ---------- */
+const I18N = {
+  ru: {
+    ageQuestion: 'Вам есть 18 лет?',
+    yes: 'Да', no: 'Нет',
+    inviteTitle: '18 лет пути. Спасибо, что вы с нами!',
+    inviteText1: 'Восемнадцать лет — это не просто цифра. Это тысячи успешных кейсов, сотни вызовов и один надежный Ледокол, который уверенно идет вперед благодаря вам.',
+    inviteText2: '<strong>В честь нашего дня рождения мы приглашаем вас на закрытую вечеринку 23 апреля.</strong> Давайте ненадолго отложим дела, чтобы поднять бокалы за наше общее будущее, пообщаться вживую и просто хорошо провести вечер.',
+    inviteLead: 'Вас ждут:',
+    featDinner: 'Ужин', featCocktails: 'Авторские коктейли', featTalk: 'Живое общение', featSurprise: 'Приятные сюрпризы',
+    register: 'Зарегистрироваться',
+    step: 'Шаг 1 из 2',
+    formTitle: 'Регистрация',
+    formSub: 'Оставьте данные — мы ждём вас.',
+    fieldName: 'ФИО', fieldCompany: 'Компания', fieldPhone: 'Телефон',
+    errName: 'Введите ФИО', errCompany: 'Укажите компанию', errPhone: 'Введите корректный номер',
+    submit: 'Зарегистрироваться',
+    confirmHeading: 'Встречаемся',
+    confirmText: 'Спасибо за регистрацию. Готовьтесь к замечательному вечеру.',
+    addCalendar: 'Добавить в календарь',
+    restart: 'На главную',
+    modalTitle: 'Приходите позже',
+    modalText: 'Это приглашение для гостей 18+. Будем рады встрече через несколько лет.',
+    understood: 'Понятно',
+    icsTitle: 'Ledokol Group — 18 лет',
+    icsDesc: 'Закрытая вечеринка в честь 18-летия Ledokol Group. Ужин, авторские коктейли, живое общение и приятные сюрпризы.'
+  },
+  en: {
+    ageQuestion: 'Are you 18 or older?',
+    yes: 'Yes', no: 'No',
+    inviteTitle: '18 years on the journey. Thank you for being with us!',
+    inviteText1: 'Eighteen years is more than just a number. It\u2019s thousands of successful cases, hundreds of challenges, and one reliable Icebreaker pressing forward \u2014 thanks to you.',
+    inviteText2: '<strong>To celebrate our birthday we invite you to a private party on April 23.</strong> Let\u2019s set work aside for an evening, raise a glass to our shared future, meet in person and simply enjoy the night.',
+    inviteLead: 'What awaits you:',
+    featDinner: 'Dinner', featCocktails: 'Signature cocktails', featTalk: 'Live conversation', featSurprise: 'Pleasant surprises',
+    register: 'Register',
+    step: 'Step 1 of 2',
+    formTitle: 'Registration',
+    formSub: 'Leave your details \u2014 we\u2019re looking forward to seeing you.',
+    fieldName: 'Full name', fieldCompany: 'Company', fieldPhone: 'Phone',
+    errName: 'Please enter your name', errCompany: 'Please enter your company', errPhone: 'Please enter a valid phone',
+    submit: 'Register',
+    confirmHeading: 'See you at',
+    confirmText: 'Thank you for registering. Get ready for a wonderful evening.',
+    addCalendar: 'Add to calendar',
+    restart: 'Back to start',
+    modalTitle: 'Come back later',
+    modalText: 'This invitation is for guests 18+. We\u2019ll be glad to see you in a few years.',
+    understood: 'Got it',
+    icsTitle: 'Ledokol Group \u2014 18th anniversary',
+    icsDesc: 'Private party celebrating 18 years of Ledokol Group. Dinner, signature cocktails, mingling and pleasant surprises.'
+  },
+  uz: {
+    ageQuestion: 'Siz 18 yoshga to\u2018ldingizmi?',
+    yes: 'Ha', no: 'Yo\u2018q',
+    inviteTitle: '18 yillik yo\u2018l. Biz bilan birga bo\u2018lganingiz uchun rahmat!',
+    inviteText1: 'O\u2018n sakkiz yil — bu shunchaki raqam emas. Bu minglab muvaffaqiyatli loyihalar, yuzlab sinovlar va siz tufayli dadil oldinga intilayotgan bitta ishonchli Ledokol.',
+    inviteText2: '<strong>Tug\u2018ilgan kunimiz sharafiga sizni 23-aprel kuni yopiq kechaga taklif qilamiz.</strong> Bir oqshomga ishlarni chetga surib, umumiy kelajagimiz uchun qadah ko\u2018taramiz, jonli suhbatlashamiz va kechani yaxshi o\u2018tkazamiz.',
+    inviteLead: 'Sizni kutmoqda:',
+    featDinner: 'Kechki ovqat', featCocktails: 'Mualliflik kokteyllari', featTalk: 'Jonli muloqot', featSurprise: 'Yoqimli syurprizlar',
+    register: 'Ro\u2018yxatdan o\u2018tish',
+    step: '1 / 2-qadam',
+    formTitle: 'Ro\u2018yxatdan o\u2018tish',
+    formSub: 'Ma\u2019lumotlaringizni qoldiring — biz sizni kutamiz.',
+    fieldName: 'To\u2018liq ism', fieldCompany: 'Kompaniya', fieldPhone: 'Telefon',
+    errName: 'Ismingizni kiriting', errCompany: 'Kompaniyangizni ko\u2018rsating', errPhone: 'To\u2018g\u2018ri raqam kiriting',
+    submit: 'Ro\u2018yxatdan o\u2018tish',
+    confirmHeading: 'Uchrashamiz',
+    confirmText: 'Ro\u2018yxatdan o\u2018tganingiz uchun rahmat. Ajoyib oqshomga tayyorlaning.',
+    addCalendar: 'Kalendarga qo\u2018shish',
+    restart: 'Boshiga qaytish',
+    modalTitle: 'Keyinroq uchrashaylik',
+    modalText: 'Ushbu taklif 18+ yoshdagi mehmonlar uchun. Bir necha yildan so\u2018ng ko\u2018rishishga xursand bo\u2018lamiz.',
+    understood: 'Tushundim',
+    icsTitle: 'Ledokol Group — 18 yillik yubiley',
+    icsDesc: 'Ledokol Group\u2019ning 18 yilligi sharafiga yopiq kecha. Kechki ovqat, mualliflik kokteyllari, jonli suhbat va yoqimli syurprizlar.'
+  }
+};
+
+let currentLang = 'ru';
+
+function detectLang() {
+  const stored = localStorage.getItem('ledokol_lang');
+  if (stored && I18N[stored]) return stored;
+  const nav = (navigator.language || 'ru').slice(0, 2).toLowerCase();
+  if (I18N[nav]) return nav;
+  return 'ru';
+}
+
+function setLang(lang) {
+  if (!I18N[lang]) return;
+  currentLang = lang;
+  localStorage.setItem('ledokol_lang', lang);
+  document.documentElement.lang = lang;
+
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (I18N[lang][key] !== undefined) {
+      el.innerHTML = I18N[lang][key];
+    }
+  });
+
+  document.querySelectorAll('.lang-switch button').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === lang);
+  });
+}
+
+document.querySelectorAll('.lang-switch button').forEach(btn => {
+  btn.addEventListener('click', () => setLang(btn.dataset.lang));
+});
+
+/* ---------- Slide navigation ---------- */
+const slides = document.querySelectorAll('.slide');
+let currentSlide = 1;
+let isTransitioning = false;
+
+// All slides share the single dark cracked-ice theme — no per-slide swap.
+
+function goTo(n) {
+  if (isTransitioning || n === currentSlide) return;
+  isTransitioning = true;
+
+  const outgoing = document.querySelector(`.slide[data-slide="${currentSlide}"]`);
+  const incoming = document.querySelector(`.slide[data-slide="${n}"]`);
+  if (!incoming) { isTransitioning = false; return; }
+
+  gsap.to(outgoing, {
+    opacity: 0,
+    y: -20,
+    duration: 0.4,
+    ease: 'power2.in',
+    onComplete: () => {
+      outgoing.classList.remove('active');
+      outgoing.style.transform = '';
+      outgoing.style.opacity = '';
+      incoming.classList.add('active');
+      gsap.set(incoming, { opacity: 1, y: 0 });
+      currentSlide = n;
+      animateSlideEntry(n);
+      isTransitioning = false;
+    }
+  });
+}
+
+function animateSlideEntry(n) {
+  const slide = document.querySelector(`.slide[data-slide="${n}"]`);
+  if (!slide) return;
+
+  if (n === 2) {
+    const els = slide.querySelectorAll('.invite-title, .invite-text, .invite-lead, .invite-features, .btn');
+    gsap.fromTo(els,
+      { opacity: 0, y: 24 },
+      { opacity: 1, y: 0, duration: 0.6, stagger: 0.08, ease: 'power3.out' }
+    );
+    const ship = slide.querySelector('#heroShip');
+    if (ship) gsap.fromTo(ship, { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 1.2, ease: 'power3.out' });
+  }
+  if (n === 3) {
+    const els = slide.querySelectorAll('.form-title, .form-sub, .field, .submit-btn');
+    gsap.fromTo(els,
+      { opacity: 0, y: 20 },
+      { opacity: 1, y: 0, duration: 0.55, stagger: 0.07, ease: 'power3.out' }
+    );
+  }
+  if (n === 4) {
+    const els = slide.querySelectorAll('.confirm-check, .confirm-heading, .confirm-date, .confirm-venue, .confirm-text, .btn');
+    gsap.fromTo(els,
+      { opacity: 0, y: 24 },
+      { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: 'power3.out' }
+    );
+    launchParticles();
+  }
+}
+
+/* ---------- Action bindings ---------- */
+document.addEventListener('click', (e) => {
+  const t = e.target.closest('[data-action]');
+  if (!t) return;
+  const action = t.dataset.action;
+
+  if (action === 'age-yes') goTo(2);
+  else if (action === 'age-no') openModal();
+  else if (action === 'modal-close') closeModal();
+  else if (action === 'go-register') goTo(3);
+  else if (action === 'restart') { goTo(1); resetForm(); }
+});
+
+function openModal() {
+  const m = document.getElementById('ageModal');
+  m.classList.add('active');
+  gsap.fromTo(m.querySelector('.modal'), { scale: 0.88, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, ease: 'back.out(1.6)' });
+}
+function closeModal() {
+  document.getElementById('ageModal').classList.remove('active');
+}
+document.getElementById('ageModal').addEventListener('click', (e) => {
+  if (e.target.id === 'ageModal') closeModal();
+});
+
+/* ---------- Form: validation + submit ---------- */
+const form = document.getElementById('regForm');
+const submitBtn = document.getElementById('submitBtn');
+
+function validatePhone(val) {
+  // Accepts international format; requires 9+ digits.
+  const digits = val.replace(/\D/g, '');
+  return digits.length >= 9 && digits.length <= 15;
+}
+
+function validateField(input) {
+  const wrap = input.closest('.field');
+  let valid = true;
+  if (input.id === 'fPhone') valid = validatePhone(input.value);
+  else valid = input.value.trim().length >= 2;
+  if (wrap) wrap.classList.toggle('has-error', !valid);
+  return valid;
+}
+
+form.querySelectorAll('input[type="text"], input[type="tel"]').forEach(inp => {
+  inp.addEventListener('blur', () => { if (inp.value.trim()) validateField(inp); });
+  inp.addEventListener('input', () => {
+    const wrap = inp.closest('.field');
+    if (wrap && wrap.classList.contains('has-error')) validateField(inp);
+  });
+});
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (submitBtn.classList.contains('loading')) return;
+
+  let ok = true;
+  form.querySelectorAll('input[required]').forEach(inp => {
+    if (!validateField(inp)) ok = false;
+  });
+  if (!ok) return;
+
+  submitBtn.classList.add('loading');
+  submitBtn.disabled = true;
+
+  const payload = {
+    name: form.fName.value.trim(),
+    company: form.fCompany.value.trim(),
+    phone: form.fPhone.value.trim(),
+    lang: currentLang,
+    ts: new Date().toISOString()
+  };
+
+  try {
+    await submitForm(payload);
+    setTimeout(() => {
+      submitBtn.classList.remove('loading');
+      submitBtn.disabled = false;
+      goTo(4);
+    }, 600);
+  } catch (err) {
+    console.error('Submit failed', err);
+    submitBtn.classList.remove('loading');
+    submitBtn.disabled = false;
+    alert(I18N[currentLang].errName ? 'Упс, попробуйте ещё раз / Please try again' : 'Error');
+  }
+});
+
+/**
+ * submitForm(data) — точка интеграции для заказчика.
+ * Подключите один из вариантов ниже.
+ *
+ * === Вариант 1: Telegram bot ===
+ * const TOKEN = 'XXX:YYY';
+ * const CHAT_ID = '123456789';
+ * const text = `Новая заявка Ledokol 18:\nФИО: ${data.name}\nКомпания: ${data.company}\nТелефон: ${data.phone}`;
+ * await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+ *   method: 'POST', headers: {'Content-Type':'application/json'},
+ *   body: JSON.stringify({ chat_id: CHAT_ID, text })
+ * });
+ *
+ * === Вариант 2: Google Apps Script webhook ===
+ * await fetch('https://script.google.com/macros/s/XXX/exec', {
+ *   method: 'POST',
+ *   body: JSON.stringify(data)
+ * });
+ *
+ * === Вариант 3: Formspree ===
+ * await fetch('https://formspree.io/f/XXXXX', {
+ *   method: 'POST', headers: {'Accept':'application/json','Content-Type':'application/json'},
+ *   body: JSON.stringify(data)
+ * });
+ */
+async function submitForm(data) {
+  console.log('[Ledokol] submitForm payload:', data);
+  // TODO: заказчик подключает интеграцию здесь.
+  return new Promise(r => setTimeout(r, 300));
+}
+
+function resetForm() {
+  form.reset();
+  form.querySelectorAll('.has-error').forEach(el => el.classList.remove('has-error'));
+}
+
+/* ---------- ICS calendar file ---------- */
+document.getElementById('icsBtn').addEventListener('click', () => {
+  const t = I18N[currentLang];
+  const ics = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//Ledokol Group//18 Anniversary//EN',
+    'CALSCALE:GREGORIAN',
+    'METHOD:PUBLISH',
+    'BEGIN:VEVENT',
+    'UID:ledokol-18-2026@ledokolgroup.com',
+    'DTSTAMP:' + fmtICS(new Date()),
+    'DTSTART:20260423T140000Z', // 19:00 Asia/Tashkent (UTC+5) = 14:00 UTC
+    'DTEND:20260424T000000Z',   // 05:00 Asia/Tashkent next day
+    'SUMMARY:' + escapeICS(t.icsTitle),
+    'DESCRIPTION:' + escapeICS(t.icsDesc),
+    'LOCATION:Bar Gravity, Tashkent',
+    'STATUS:CONFIRMED',
+    'END:VEVENT',
+    'END:VCALENDAR'
+  ].join('\r\n');
+
+  const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'ledokol-18.ics';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+});
+
+function fmtICS(d) {
+  const p = n => String(n).padStart(2, '0');
+  return d.getUTCFullYear() + p(d.getUTCMonth()+1) + p(d.getUTCDate()) + 'T' +
+         p(d.getUTCHours()) + p(d.getUTCMinutes()) + p(d.getUTCSeconds()) + 'Z';
+}
+function escapeICS(s) {
+  return (s || '').replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
+}
+
+/* ---------- Confetti particles on confirm ---------- */
+function launchParticles() {
+  const root = document.getElementById('confirmRoot');
+  const rect = root.getBoundingClientRect();
+  const cx = rect.width / 2;
+  const cy = 80;
+  const colors = ['#FFFFFF', '#C6D4EC', '#2E84F2', '#0C5DC5'];
+
+  for (let i = 0; i < 22; i++) {
+    const p = document.createElement('span');
+    p.className = 'particle';
+    p.style.background = colors[i % colors.length];
+    p.style.left = cx + 'px';
+    p.style.top = cy + 'px';
+    root.appendChild(p);
+    const angle = (Math.random() * Math.PI * 2);
+    const dist = 120 + Math.random() * 180;
+    gsap.fromTo(p,
+      { opacity: 1, scale: 1, x: 0, y: 0, rotate: 0 },
+      {
+        x: Math.cos(angle) * dist,
+        y: Math.sin(angle) * dist + 40,
+        rotate: (Math.random() - 0.5) * 360,
+        scale: 0.4,
+        opacity: 0,
+        duration: 1.3 + Math.random() * 0.8,
+        ease: 'power2.out',
+        onComplete: () => p.remove()
+      }
+    );
+  }
+}
+
+/* ---------- Ambient animations ---------- */
+function initAmbient() {
+  // Floating shards and ice-texture parallax are hidden in the light corporate
+  // theme (see .shards / .bg-texture `display: none`). No RAF needed.
+
+  // Initial slide-1 entrance — fromTo with immediateRender applies opacity:0 synchronously,
+  // then remove .js-pending so CSS no longer forces the hidden state.
+  const s1 = document.querySelector('.slide[data-slide="1"]');
+  gsap.set([s1.querySelector('.age-huge'), s1.querySelector('.age-question'), ...s1.querySelectorAll('.age-buttons .btn')], { opacity: 0 });
+  document.body.classList.remove('js-pending');
+  gsap.fromTo(s1.querySelector('.age-huge'),
+    { opacity: 0, y: 40, scale: 0.92 },
+    { opacity: 1, y: 0, scale: 1, duration: 1.2, ease: 'power3.out' });
+  gsap.fromTo(s1.querySelector('.age-question'),
+    { opacity: 0, y: 16 },
+    { opacity: 1, y: 0, duration: 0.8, delay: 0.35, ease: 'power3.out' });
+  gsap.fromTo(s1.querySelectorAll('.age-buttons .btn'),
+    { opacity: 0, y: 20 },
+    { opacity: 1, y: 0, duration: 0.6, delay: 0.55, stagger: 0.08, ease: 'power3.out' });
+}
+
+/* ---------- Keyboard UX ---------- */
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && document.getElementById('ageModal').classList.contains('active')) {
+    closeModal();
+  }
+});
+
+/* ---------- Init ---------- */
+setLang(detectLang());
+initAmbient();
+</script>
+</body>
+</html>

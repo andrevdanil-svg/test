@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="12" fill="#05070D"/>
+  <!-- Wedge mark from the Ledokol logo -->
+  <polygon points="8,12 8,52 52,32" fill="#3A63B8"/>
+</svg>
