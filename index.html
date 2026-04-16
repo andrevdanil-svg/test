@@ -981,7 +981,7 @@ const I18N = {
     inviteText1: 'Восемнадцать лет — это не просто цифра. Это тысячи успешных кейсов, сотни вызовов и один надежный Ледокол, который уверенно идет вперед благодаря вам.',
     inviteText2: '<strong>В честь нашего дня рождения мы приглашаем вас на закрытую вечеринку 23 апреля.</strong> Давайте ненадолго отложим дела, чтобы поднять бокалы за наше общее будущее, пообщаться вживую и просто хорошо провести вечер.',
     inviteLead: 'Вас ждут:',
-    featDinner: 'Ужин', featCocktails: 'Авторские коктейли', featTalk: 'Живое общение', featSurprise: 'Приятные сюрпризы',
+    featDinner: 'Ужин', featCocktails: 'Авторские коктейли', featTalk: 'Живое общение',
     register: 'Зарегистрироваться',
     step: 'Шаг 1 из 2',
     formTitle: 'Регистрация',
@@ -1006,7 +1006,7 @@ const I18N = {
     inviteText1: 'Eighteen years is more than just a number. It\u2019s thousands of successful cases, hundreds of challenges, and one reliable Icebreaker pressing forward \u2014 thanks to you.',
     inviteText2: '<strong>To celebrate our birthday we invite you to a private party on April 23.</strong> Let\u2019s set work aside for an evening, raise a glass to our shared future, meet in person and simply enjoy the night.',
     inviteLead: 'What awaits you:',
-    featDinner: 'Dinner', featCocktails: 'Signature cocktails', featTalk: 'Live conversation', featSurprise: 'Pleasant surprises',
+    featDinner: 'Dinner', featCocktails: 'Signature cocktails', featTalk: 'Live conversation',
     register: 'Register',
     step: 'Step 1 of 2',
     formTitle: 'Registration',
@@ -1031,7 +1031,7 @@ const I18N = {
     inviteText1: 'O\u2018n sakkiz yil — bu shunchaki raqam emas. Bu minglab muvaffaqiyatli loyihalar, yuzlab sinovlar va siz tufayli dadil oldinga intilayotgan bitta ishonchli Ledokol.',
     inviteText2: '<strong>Tug\u2018ilgan kunimiz sharafiga sizni 23-aprel kuni yopiq kechaga taklif qilamiz.</strong> Bir oqshomga ishlarni chetga surib, umumiy kelajagimiz uchun qadah ko\u2018taramiz, jonli suhbatlashamiz va kechani yaxshi o\u2018tkazamiz.',
     inviteLead: 'Sizni kutmoqda:',
-    featDinner: 'Kechki ovqat', featCocktails: 'Mualliflik kokteyllari', featTalk: 'Jonli muloqot', featSurprise: 'Yoqimli syurprizlar',
+    featDinner: 'Kechki ovqat', featCocktails: 'Mualliflik kokteyllari', featTalk: 'Jonli muloqot',
     register: 'Ro\u2018yxatdan o\u2018tish',
     step: '1 / 2-qadam',
     formTitle: 'Ro\u2018yxatdan o\u2018tish',
@@ -1088,11 +1088,29 @@ const slides = document.querySelectorAll('.slide');
 let currentSlide = 1;
 let isTransitioning = false;
 
+/* ---------- Hash routing ---------- */
+const SLIDE_HASHES = { 1: '', 2: 'invite', 3: 'register', 4: 'thankyou' };
+const HASH_SLIDES  = { '': 1, 'invite': 2, 'register': 3, 'thankyou': 4 };
+
+function getSlideFromHash() {
+  const h = location.hash.replace('#', '');
+  return HASH_SLIDES[h] || 1;
+}
+
+window.addEventListener('popstate', (e) => {
+  const n = e.state?.slide ?? getSlideFromHash();
+  goTo(n, false);
+});
+
 // All slides share the single dark cracked-ice theme — no per-slide swap.
 
-function goTo(n) {
+function goTo(n, pushUrl = true) {
   if (isTransitioning || n === currentSlide) return;
   isTransitioning = true;
+  if (pushUrl) {
+    const hash = SLIDE_HASHES[n];
+    history.pushState({ slide: n }, '', hash ? '#' + hash : location.pathname);
+  }
 
   const outgoing = document.querySelector(`.slide[data-slide="${currentSlide}"]`);
   const incoming = document.querySelector(`.slide[data-slide="${n}"]`);
@@ -1372,6 +1390,9 @@ document.addEventListener('keydown', (e) => {
 /* ---------- Init ---------- */
 setLang(detectLang());
 initAmbient();
+history.replaceState({ slide: 1 }, '', location.href);
+const initSlide = getSlideFromHash();
+if (initSlide !== 1) goTo(initSlide, false);
 </script>
 </body>
 </html>
