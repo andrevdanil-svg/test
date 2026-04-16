@@ -1239,7 +1239,7 @@ form.addEventListener('submit', async (e) => {
 });
 
 const TG_TOKEN  = '8450430778:AAF8-QqNN0OYnKdZmN0E-5ECbcQGoeUPkTo'; // замените если пересоздали токен
-const TG_CHAT_ID = '969626728';
+const TG_CHAT_ID = '138533737';
 const GAS_URL    = ''; // вставьте URL Google Apps Script когда будет готов
 
 async function submitForm(data) {
@@ -1251,26 +1251,18 @@ async function submitForm(data) {
     `🌐 Язык: ${data.lang}\n` +
     `🕐 ${new Date().toLocaleString('ru-RU', { timeZone: 'Asia/Tashkent' })}`;
 
-  const tasks = [];
-
-  tasks.push(
-    fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: TG_CHAT_ID, text })
-    })
-  );
+  const tgRes = await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ chat_id: TG_CHAT_ID, text })
+  });
+  const tgJson = await tgRes.json();
+  console.log('[Ledokol] Telegram response:', tgJson);
+  if (!tgJson.ok) throw new Error('Telegram error: ' + tgJson.description);
 
   if (GAS_URL) {
-    tasks.push(
-      fetch(GAS_URL, {
-        method: 'POST',
-        body: JSON.stringify(data)
-      })
-    );
+    await fetch(GAS_URL, { method: 'POST', body: JSON.stringify(data) });
   }
-
-  await Promise.all(tasks);
 }
 
 function resetForm() {
