@@ -101,10 +101,12 @@ body {
   align-items: center;
   text-decoration: none;
   user-select: none;
-  margin-top: calc(-0.5 * clamp(16px, 3vw, 32px));
+  /* Pull the logo up so it visually sits higher in the top-bar:
+     offsets both the top-bar padding and part of the PNG's own blank top area. */
+  margin-top: calc(-1 * clamp(16px, 3vw, 32px) - clamp(70px, 19vw, 85px));
 }
 .logo-img {
-  height: clamp(320px, 38vw, 440px);
+  height: clamp(260px, 28vw, 360px);
   width: auto;
   display: block;
   filter: brightness(0) invert(1);
@@ -338,6 +340,10 @@ body {
   max-width: 680px;
   width: 100%;
 }
+/* Wrapper around the three lead-copy blocks on slide 2.
+   Invisible on desktop (display: contents). On mobile the @media block below
+   turns it into a glass panel so the text stays readable over the ice bg. */
+.invite-copy { display: contents; }
 .invite-title {
   font-family: 'Unbounded', sans-serif;
   font-size: clamp(1.75rem, 4.5vw, 3rem);
@@ -741,6 +747,42 @@ body {
   .confirm-actions .btn { width: 100%; }
   .top-bar { padding: 14px 16px; }
   .logo-text { display: none; }
+
+  /* Logo: smaller + raised higher on phones */
+  .logo-img { height: 110px; }
+  .logo { margin-top: -22px; }
+
+  /* Lang switch: smaller, pulled left from the edge, higher contrast
+     so it reads over bright ice highlights */
+  .lang-switch {
+    margin-right: 8px;
+    padding: 3px;
+    background: rgba(4, 16, 40, 0.55);
+    border-color: rgba(255, 255, 255, 0.22);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
+  }
+  .lang-switch button {
+    font-size: 10px;
+    padding: 6px 9px;
+    min-width: 30px;
+    min-height: 26px;
+    color: rgba(255, 255, 255, 0.88);
+  }
+
+  /* Glass panel under the three lead-copy blocks on slide 2 */
+  .invite-copy {
+    display: block;
+    margin: 0 auto 20px;
+    padding: 20px 18px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+  .invite-copy .invite-lead { margin-bottom: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -806,11 +848,13 @@ body {
   <section class="slide" data-slide="2" aria-labelledby="invite-title">
     <div class="invite">
       <div class="invite-content">
-        <h2 class="invite-title" id="invite-title" data-i18n="inviteTitle">18 лет пути. Спасибо, что вы с нами!</h2>
-        <p class="invite-text" data-i18n="inviteText1">Восемнадцать лет — это не просто цифра. Это тысячи успешных кейсов, сотни вызовов и один надежный Ледокол, который уверенно идет вперед благодаря вам.</p>
-        <p class="invite-text" id="invite-lead-para" data-i18n="inviteText2"><strong>В честь нашего дня рождения мы приглашаем вас на закрытую вечеринку 23 апреля.</strong> Давайте ненадолго отложим дела, чтобы поднять бокалы за наше общее будущее, пообщаться вживую и просто хорошо провести вечер.</p>
+        <div class="invite-copy">
+          <h2 class="invite-title" id="invite-title" data-i18n="inviteTitle">18 лет пути. Спасибо, что вы с нами!</h2>
+          <p class="invite-text" data-i18n="inviteText1">Восемнадцать лет — это не просто цифра. Это тысячи успешных кейсов, сотни вызовов и один надежный Ледокол, который уверенно идет вперед благодаря вам.</p>
+          <p class="invite-text" id="invite-lead-para" data-i18n="inviteText2"><strong>В честь нашего дня рождения мы приглашаем вас на закрытую вечеринку 23 апреля.</strong> Давайте ненадолго отложим дела, чтобы поднять бокалы за наше общее будущее, пообщаться вживую и просто хорошо провести вечер.</p>
 
-        <p class="invite-lead" id="invite-lead" data-i18n="inviteLead">Вас ждут:</p>
+          <p class="invite-lead" id="invite-lead" data-i18n="inviteLead">Вас ждут:</p>
+        </div>
 
         <div class="invite-features">
           <div class="feature">
